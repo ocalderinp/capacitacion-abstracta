@@ -6,8 +6,9 @@ import com.aventstack.extentreports.reporter.configuration.Theme;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.chrome.ChromeDriver;
-import org.openqa.selenium.firefox.FirefoxDriver;
+import org.openqa.selenium.chrome.ChromeOptions;
+import org.openqa.selenium.firefox.FirefoxOptions;
+import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.testng.ITestResult;
@@ -16,6 +17,8 @@ import sun.awt.OSInfo;
 
 import java.io.IOException;
 import java.lang.reflect.Method;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.concurrent.TimeUnit;
 
 import static org.testng.Assert.assertTrue;
@@ -56,13 +59,13 @@ public class TestGoogle {
 
     @BeforeTest(alwaysRun = true)
     @Parameters("browser")
-    public void setup(String browser) {
+    public void setup(String browser) throws MalformedURLException {
         this.browser = browser;
         if (this.browser.equalsIgnoreCase("chrome")) {
-            driver = new ChromeDriver();
+            driver = new RemoteWebDriver(new URL(HUB_URL), new ChromeOptions());
         } else if (this.browser.equalsIgnoreCase("firefox"))
-            driver = new FirefoxDriver();
-        else driver = new ChromeDriver();
+            driver = new RemoteWebDriver(new URL(HUB_URL), new FirefoxOptions());
+        else driver = new RemoteWebDriver(new URL(HUB_URL), new ChromeOptions());
 
         wait = new WebDriverWait(driver, WAIT);
         driver.manage().window().maximize();
