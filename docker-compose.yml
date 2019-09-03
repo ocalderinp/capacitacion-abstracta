@@ -1,0 +1,55 @@
+version: "3"
+networks:
+  grid:
+    driver: bridge
+services:
+  app:
+    build:
+      context: "."
+    container_name: app
+    depends_on:
+      - selenium-hub
+      - firefoxnode
+      - chromenode
+    networks:
+      - grid
+    volumes:
+      - "$PWD/reports:/root/testAutomation/reports:rw"
+  chromenode:
+    depends_on:
+      - selenium-hub
+    environment:
+      - HUB_PORT_4444_TCP_ADDR=selenium-hub
+      - HUB_PORT_4444_TCP_PORT=4444
+    image: selenium/node-chrome-debug:3.141.59-radium
+    volumes:
+      - /dev/shm:/dev/shm
+    networks:
+      - grid
+    ports:
+      - "5900:5900"
+  firefoxnode:
+    depends_on:
+      - selenium-hub
+    environment:
+      - HUB_PORT_4444_TCP_ADDR=selenium-hub
+      - HUB_PORT_4444_TCP_PORT=4444
+    image: selenium/node-firefox-debug:3.141.59-radium
+    volumes:
+      - /dev/shm:/dev/shm
+    networks:
+      - grid
+    ports:
+      - "5901:5900"
+  selenium-hub:
+    container_name: selenium-hub
+    image: selenium/hub:3.141.59-radium
+    healthcheck:
+      test: /opt/bin/check-grid.sh --host 0.0.0.0 --port 4444
+      interval: 15s
+      timeout: 30s
+      retries: 5
+    networks:
+      - grid
+    ports:
+      - "4444:4444"
