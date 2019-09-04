@@ -43,6 +43,7 @@ public class TestGoogle {
     protected static ExtentTest extentTest;
 
     private String HUB_URL = "http://selenium-hub:4444/wd/hub";
+//    private String HUB_URL = "http://localhost:4444/wd/hub";
 
     @BeforeSuite(alwaysRun = true)
     public void setupReports() {
